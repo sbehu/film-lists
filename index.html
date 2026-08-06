@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sambit's Film Lists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #170d09;
+    --bg-alt: #23130c;
+    --card: #291710;
+    --card-hover: #342016;
+    --accent: #ff7a30;
+    --accent2: #ffc93c;
+    --accent3: #ff4d6d;
+    --text: #fff3e6;
+    --text-dim: #d1a988;
+    --border: #40271a;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    padding: 100px 24px 64px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-backdrop {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 2.1fr repeat(5, 1fr);
+    grid-template-rows: 100%;
+    z-index: 0;
+    opacity: 0.68;
+    filter: saturate(1.25) contrast(1.05) brightness(0.95);
+    animation: heroPan 40s linear infinite alternate;
+  }
+  @keyframes heroPan {
+    0% { transform: scale(1.08) translateX(0); }
+    100% { transform: scale(1.08) translateX(-2%); }
+  }
+  .hero-backdrop img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 22%;
+    display: block;
+  }
+  .hero-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(23,13,9,0.1) 0%, rgba(23,13,9,0.5) 55%, var(--bg) 100%);
+    z-index: 1;
+  }
+  .embers {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .ember {
+    position: absolute;
+    bottom: -10px;
+    border-radius: 50%;
+    opacity: 0;
+    animation-name: emberRise;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+  }
+  @keyframes emberRise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.9; }
+    80% { opacity: 0.5; }
+    100% { transform: translateY(-420px) translateX(var(--drift, 20px)); opacity: 0; }
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    animation: heroIn 0.9s ease both;
+  }
+  @keyframes heroIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    background: rgba(255,201,60,0.1);
+    border: 1px solid rgba(255,201,60,0.35);
+    border-radius: 20px;
+    padding: 6px 16px;
+    margin-bottom: 18px;
+    text-shadow: 0 0 14px rgba(255,201,60,0.4);
+  }
+  .hero-content .avatar {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.18);
+    margin-bottom: 18px;
+    box-shadow: 0 6px 26px rgba(0,0,0,0.5);
+  }
+  .hero-content h1 {
+    margin: 0 0 8px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 3rem;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+  }
+  .hero-content h1 span {
+    font-style: normal;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent2), var(--accent));
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 6s linear infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+  .hero-content p.tagline {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    font-family: var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+  .hero-content p.tagline a { color: var(--accent3); text-decoration: none; }
+  .hero-content p.tagline a:hover { text-decoration: underline; }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat .num {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--accent2);
+    text-shadow: 0 2px 16px rgba(255,201,60,0.45);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .label { font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    width: 22px;
+    height: 34px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-radius: 12px;
+  }
+  .scroll-cue::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 4px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    animation: scrollDot 1.6s ease-in-out infinite;
+  }
+  @keyframes scrollDot {
+    0% { opacity: 1; top: 6px; }
+    70% { opacity: 0; top: 18px; }
+    100% { opacity: 0; top: 18px; }
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section.wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .section-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 60px 0 22px;
+  }
+  .section-heading h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-style: italic;
+    font-size: 1.55rem;
+    letter-spacing: -0.01em;
+  }
+  .section-heading .sub {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- FEATURED ---------- */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+  .feature-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .feature-card.visible {
+    animation: cardIn 0.7s ease forwards;
+  }
+  .feature-card:nth-child(2).visible { animation-delay: 0.1s; }
+  .feature-card:nth-child(3).visible { animation-delay: 0.2s; }
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .feature-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 32px rgba(255,122,48,0.18);
+  }
+  .feature-collage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: 210px;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-collage .cell {
+    overflow: hidden;
+    position: relative;
+  }
+  .feature-collage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.82);
+    transition: transform 0.6s ease, filter 0.6s ease;
+  }
+  .feature-card:hover .feature-collage img {
+    transform: scale(1.12);
+    filter: brightness(0.95);
+  }
+  .feature-collage-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(15,18,22,0.97) 100%);
+    pointer-events: none;
+  }
+  .feature-rank {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(23,13,9,0.8);
+    backdrop-filter: blur(4px);
+    color: var(--accent2);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,122,48,0.45);
+    box-shadow: 0 0 12px rgba(255,122,48,0.25);
+    z-index: 2;
+  }
+  .feature-body { padding: 18px 20px 22px; }
+  .feature-body h3 {
+    margin: 0 0 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+  .feature-body .count {
+    display: inline-block;
+    font-family: var(--font-mono);
+    background: rgba(255,122,48,0.14);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .feature-body p {
+    margin: 0;
+    font-size: 0.87rem;
+    color: var(--text-dim);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .feature-body .link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--accent3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: gap 0.2s ease;
+  }
+  .feature-card:hover .feature-body .link { color: var(--accent); }
+
+  /* ---------- CONTROLS ---------- */
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  #search {
+    flex: 1;
+    min-width: 220px;
+    max-width: 420px;
+    padding: 11px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  #search:focus { outline: none; border-color: var(--accent3); box-shadow: 0 0 0 3px rgba(255,77,109,0.2); }
+  #sort {
+    padding: 11px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+  }
+  .result-count {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    margin: 14px 2px 0;
+  }
+
+  /* ---------- GRID OF ALL LISTS ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    margin-top: 10px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .card.visible { animation: cardIn 0.55s ease forwards; }
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.4), 0 0 24px rgba(255,122,48,0.15);
+  }
+  .card-img {
+    height: 140px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #342016, #23130c);
+  }
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.75);
+    transition: transform 0.5s ease, filter 0.5s ease;
+  }
+  .card:hover .card-img img {
+    transform: scale(1.1);
+    filter: brightness(0.9);
+  }
+  .card-img-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(23,13,9,0.95) 100%);
+  }
+  .card-count {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    background: rgba(255,122,48,0.2);
+    border: 1px solid rgba(255,122,48,0.45);
+    backdrop-filter: blur(3px);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
+  .card-body {
+    padding: 14px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .card h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin: 0 0 8px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .card p {
+    margin: 0;
+    font-size: 0.83rem;
+    color: var(--text-dim);
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card .link {
+    margin-top: 12px;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: var(--accent3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .card:hover .link { color: var(--accent); }
+  .movie-hit {
+    margin-top: 10px;
+    font-size: 0.76rem;
+    font-family: var(--font-mono);
+    color: var(--accent2);
+    background: rgba(255,201,60,0.12);
+    border: 1px solid rgba(255,201,60,0.35);
+    border-radius: 4px;
+    padding: 5px 9px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 54px 24px 60px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 44px;
+  }
+  footer a { color: var(--accent3); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  .no-results {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 60px 0;
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .featured-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-backdrop" id="heroBackdrop"></div>
+  <div class="hero-fade"></div>
+  <div class="embers" id="embers"></div>
+  <div class="hero-content">
+    <img class="avatar" src="https://a.ltrbxd.com/resized/avatar/upload/7/9/2/6/6/8/7/shard/avtr-0-48-0-48-crop.jpg?v=4f906758d9" alt="Sambit Behura">
+    <div class="hero-kicker">🍁 Autumn Sonata</div>
+    <h1>Sambit's <span>Film Lists</span></h1>
+    <p class="tagline">A cinephile's catalog, curated on <a href="https://letterboxd.com/behurasambit/lists/" target="_blank" rel="noopener">Letterboxd</a></p>
+    <div class="stats">
+      <div class="stat"><div class="num" data-target="21" id="statLists">0</div><div class="label">Lists</div></div>
+      <div class="stat"><div class="num" data-target="628" id="statFilms">0</div><div class="label">Unique Films</div></div>
+    </div>
+  </div>
+  <div class="scroll-cue"></div>
+</div>
+
+<section class="wrap">
+
+  <div class="section-heading">
+    <h2>Featured Collections</h2>
+    <span class="sub">the three lists that matter most</span>
+  </div>
+
+  <div class="featured-grid" id="featuredGrid">
+
+    <a class="feature-card" href="https://letterboxd.com/behurasambit/list/my-all-time-favourite-ranked/" target="_blank" rel="noopener">
+      <div class="feature-collage">
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/eg/fm/xy/wx/autumn-sonata-1200-1200-675-675-crop-000000.jpg?v=c6c2f2761a" alt="Autumn Sonata" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/7b/e8/54/x8/pather-1200-1200-675-675-crop-000000.jpg?v=a3b87303f3" alt="Pather Panchali" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/vu/yu/kb/yl/ikiru-1200-1200-675-675-crop-000000.jpg?v=a90d9b56b4" alt="Ikiru" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/93/25/ds/ar/amadeus-1200-1200-675-675-crop-000000.jpg?v=6c64f3c798" alt="Amadeus" loading="lazy"></div>
+        <div class="feature-collage-fade"></div>
+        <span class="feature-rank">01 · The Pantheon</span>
+      </div>
+      <div class="feature-body">
+        <h3>My all time favourite ranked</h3>
+        <span class="count">8 films</span>
+        <p>Having traversed cinema's boundless realms — from populist spectacles to introspective arthouse — this is the constellation of films that define my soul's cinematic pantheon. Ray, Bergman, Farhadi, Coppola, Scorsese, Spielberg, Anderson, Forman.</p>
+        <span class="link">View on Letterboxd →</span>
+      </div>
+    </a>
+
+    <a class="feature-card" href="https://letterboxd.com/behurasambit/list/my-foreign-language-cinema-100-point-ranking/" target="_blank" rel="noopener">
+      <div class="feature-collage">
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/eg/fm/xy/wx/autumn-sonata-1200-1200-675-675-crop-000000.jpg?v=c6c2f2761a" alt="Autumn Sonata" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/yc/mc/ep/c9/yi-yi-1200-1200-675-675-crop-000000.jpg?v=b55a45939d" alt="Yi Yi" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/pu/d9/qu/r3/a-separation-1200-1200-675-675-crop-000000.jpg?v=981be07989" alt="A Separation" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/vu/yu/kb/yl/ikiru-1200-1200-675-675-crop-000000.jpg?v=a90d9b56b4" alt="Ikiru" loading="lazy"></div>
+        <div class="feature-collage-fade"></div>
+        <span class="feature-rank">02 · The Ranking</span>
+      </div>
+      <div class="feature-body">
+        <h3>My Foreign Language Cinema 100-point ranking</h3>
+        <span class="count">168 films</span>
+        <p>A personal 100-point ranking of every foreign-language film I've watched, built film by film. Not correlated with Letterboxd's 5-star scale — ordered highest to lowest, topped by Bergman, Klimov, Yang and Farhadi.</p>
+        <span class="link">View on Letterboxd →</span>
+      </div>
+    </a>
+
+    <a class="feature-card" href="https://letterboxd.com/behurasambit/list/top-imdb-rated-movies-i-have-watched/" target="_blank" rel="noopener">
+      <div class="feature-collage">
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/zp/bn/1x/6r/the-godfather-1200-1200-675-675-crop-000000.jpg?v=397832feef" alt="The Godfather" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/rw/q1/s4/xy/the-godfather-part-ii-1200-1200-675-675-crop-000000.jpg?v=e76eb25900" alt="The Godfather Part II" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/1y/23/4e/ir/shawshank-redemption-1200-1200-675-675-crop-000000.jpg?v=a59d283bca" alt="The Shawshank Redemption" loading="lazy"></div>
+        <div class="cell"><img src="https://a.ltrbxd.com/resized/sm/upload/93/25/ds/ar/amadeus-1200-1200-675-675-crop-000000.jpg?v=6c64f3c798" alt="Amadeus" loading="lazy"></div>
+        <div class="feature-collage-fade"></div>
+        <span class="feature-rank">03 · The Canon</span>
+      </div>
+      <div class="feature-body">
+        <h3>Top IMDb rated movies I have watched</h3>
+        <span class="count">445 films</span>
+        <p>Where the crowd and the critic agree: The Godfather, The Godfather Part II, The Shawshank Redemption, The Dark Knight, Schindler's List — the highest-rated films on IMDb that I've actually seen, in order.</p>
+        <span class="link">View on Letterboxd →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-heading">
+    <h2>All Lists</h2>
+    <span class="sub">everything else in the catalog</span>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search lists...">
+    <select id="sort">
+      <option value="default">Sort: Original order</option>
+      <option value="films-desc">Sort: Most films</option>
+      <option value="films-asc">Sort: Fewest films</option>
+      <option value="az">Sort: A–Z</option>
+    </select>
+  </div>
+  <div class="result-count" id="resultCount"></div>
+
+  <div class="grid" id="grid"></div>
+  <div class="no-results" id="noResults">No lists match your search.</div>
+
+</section>
+
+<footer>
+  Built from <a href="https://letterboxd.com/behurasambit/lists/" target="_blank" rel="noopener">letterboxd.com/behurasambit/lists</a>
+</footer>
+
+<script>
+const heroImgs = [
+  "https://a.ltrbxd.com/resized/sm/upload/eg/fm/xy/wx/autumn-sonata-1200-1200-675-675-crop-000000.jpg?v=c6c2f2761a",
+  "https://a.ltrbxd.com/resized/sm/upload/52/t7/e1/jo/persona-1200-1200-675-675-crop-000000.jpg?v=bcb2f5cc53",
+  "https://a.ltrbxd.com/resized/sm/upload/vu/yu/kb/yl/ikiru-1200-1200-675-675-crop-000000.jpg?v=a90d9b56b4",
+  "https://a.ltrbxd.com/resized/sm/upload/yc/mc/ep/c9/yi-yi-1200-1200-675-675-crop-000000.jpg?v=b55a45939d",
+  "https://a.ltrbxd.com/resized/sm/upload/93/25/ds/ar/amadeus-1200-1200-675-675-crop-000000.jpg?v=6c64f3c798",
+  "https://a.ltrbxd.com/resized/sm/upload/9v/zy/xh/u3/grave-of-fireflies-1200-1200-675-675-crop-000000.jpg?v=adde23c8bd"
+];
+document.getElementById('heroBackdrop').innerHTML = heroImgs.map(src => `<img src="${src}" alt="" loading="lazy">`).join('');
+
+// Floating embers (autumn sparks) in the hero
+const emberColors = ['#ff7a30', '#ffc93c', '#ff4d6d'];
+const embersEl = document.getElementById('embers');
+let emberHtml = '';
+for (let i = 0; i < 26; i++) {
+  const left = Math.random() * 100;
+  const size = 3 + Math.random() * 5;
+  const duration = 6 + Math.random() * 8;
+  const delay = Math.random() * 10;
+  const drift = (Math.random() * 60 - 30).toFixed(0) + 'px';
+  const color = emberColors[i % emberColors.length];
+  emberHtml += `<span class="ember" style="left:${left}%; width:${size}px; height:${size}px; background:${color}; box-shadow:0 0 ${size * 2}px ${color}; animation-duration:${duration}s; animation-delay:${delay}s; --drift:${drift};"></span>`;
+}
+embersEl.innerHTML = emberHtml;
+
+const lists = [
+  { title: "My all time favourite ranked", films: 8, desc: "Having traversed cinema's boundless realms—from populist spectacles to introspective arthouse—I stand in awe before this constellation of films that define my soul's cinematic pantheon.", url: "https://letterboxd.com/behurasambit/list/my-all-time-favourite-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/eg/fm/xy/wx/autumn-sonata-1200-1200-675-675-crop-000000.jpg?v=c6c2f2761a",
+    movies: ["Autumn Sonata","Pather Panchali","Ikiru","Amadeus","Schindler's List","GoodFellas","A Separation","There Will Be Blood"] },
+  { title: "My Foreign Language Cinema 100-point ranking", films: 168, desc: "A personal 100-point ranking of every foreign-language film I've watched, built film by film. Ordered highest to lowest.", url: "https://letterboxd.com/behurasambit/list/my-foreign-language-cinema-100-point-ranking/", img: "https://a.ltrbxd.com/resized/sm/upload/yc/mc/ep/c9/yi-yi-1200-1200-675-675-crop-000000.jpg?v=b55a45939d",
+    movies: ["Autumn Sonata","Come and See","Yi Yi","A Separation","Ikiru","Persona","Wild Strawberries","La Haine","Incendies","Fanny and Alexander","The Celebration","Scenes from a Marriage","Grave of the Fireflies","Parasite","Spirited Away","Amour","A Woman Under the Influence","The Salesman","Stalker","Winter Light","Cinema Paradiso","Cries and Whispers","La Jetée","Amores Perros","City of God","The Ascent","I Am Cuba","A Prophet","Life Is Beautiful","The Hunt","Roma","The Discreet Charm of the Bourgeoisie","Winter Sleep","The Voice of Hind Rajab","Paprika","The Silence","Turtles Can Fly","In the Mood for Love","Chungking Express","Fireworks Wednesday","The Lives of Others","Through a Glass Darkly","Downfall","On the Silver Globe","Your Name.","Oldboy","Capernaum","About Elly","Pain and Glory","The Seventh Seal","Another Round","Das Boot","The Zone of Interest","Three Colours: Red","Shoplifters","Ran","Monster","All About My Mother","Leila's Brothers","Pretty Village, Pretty Flame","4 Months, 3 Weeks and 2 Days","Quo Vadis, Aida?","The Past","The Diving Bell and the Butterfly","Beautiful City","Decision to Leave","Leviathan","Drive My Car","Au Revoir les Enfants","Memories of Murder","Volver","A Hero","In a Better World","Portrait of a Lady on Fire","The Return","The Seed of the Sacred Fig","Call Me by Your Name","The Motorcycle Diaries","Anatomy of a Fall","Let the Right One In","Perfect Blue","Sentimental Value","Wild Tales","Shame","The Skin I Live In","Argentina 1985","Life and a Day","The Vanishing","Persepolis","Burning","Minari","A Taxi Driver","The Exterminating Angel","Where Is the Friend's House?","Crimson Gold","Through the Olive Trees","Close-Up","Klaus","The Secret in Their Eyes","Talk to Her","The Sea Inside","Taste of Cherry","The Song of Sparrows","No Bears","The Secret Agent","The Intouchables","Joyland","Law of Tehran","Good Bye, Lenin!","The Handmaiden","Past Lives","Cell 211","Society of the Snow","The Color of Paradise","Life, and Nothing More…","A Time for Drunken Horses","Son of Saul","Fantastic Planet","Bicycle Thieves","The Promised Land","Baran","It Was Just an Accident","Infernal Affairs","I Saw the Devil","Tangerines","Bol","Holy Motors","Y Tu Mamá También","Sin Nombre","Children of Heaven","Offside","My Father and My Son","Possession","Perfect Strangers","The Cremator","The Wailing","The Lizard","Io Capitano","Run Lola Run","Open Your Eyes","Ip Man","The Tenant","Amélie","The Invisible Guest","Timecrimes","Suzume","Adam's Apples","Parallel Mothers","Ali: Fear Eats the Soul","A Trip to the Moon","Audition","Pan's Labyrinth","Train to Busan","Funny Games","The Orphanage","Delicatessen","Titane","Un Chien Andalou","A Fantastic Woman","The Man Without a Past","My Neighbor Totoro","Nine Queens","Phoenix","[REC]","Holy Spider","Malena","Omar","Irreversible"] },
+  { title: "Chinese & Japanese ranked", films: 18, desc: "Cinema from China and Japan has offered some of the most memorable viewing experiences for me — visually beautiful, emotionally rich, carefully layered.", url: "https://letterboxd.com/behurasambit/list/chinese-japanese-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/vu/yu/kb/yl/ikiru-1200-1200-675-675-crop-000000.jpg?v=a90d9b56b4",
+    movies: ["Grave of the Fireflies","Yi Yi","Ikiru","Spirited Away","Perfect Blue","In the Mood for Love","Chungking Express","Ran","Shoplifters","Monster","Paprika","My Neighbor Totoro","Infernal Affairs","Drive My Car","Your Name.","Ip Man","Suzume","Audition"] },
+  { title: "Top IMDb rated movies I have watched", films: 445, desc: "The Godfather, The Godfather Part II, The Shawshank Redemption, The Dark Knight, Schindler's List, and more of the highest-rated films on IMDb.", url: "https://letterboxd.com/behurasambit/list/top-imdb-rated-movies-i-have-watched/", img: "https://a.ltrbxd.com/resized/sm/upload/zp/bn/1x/6r/the-godfather-1200-1200-675-675-crop-000000.jpg?v=397832feef",
+    movies: ["The Godfather","The Godfather Part II","The Shawshank Redemption","The Dark Knight","Schindler's List","Pulp Fiction","12 Angry Men","The Lord of the Rings: The Fellowship of the Ring","The Lord of the Rings: The Return of the King","The Good, the Bad and the Ugly","The Lord of the Rings: The Two Towers","Forrest Gump","Fight Club","Inception","The Matrix","GoodFellas","Interstellar","One Flew Over the Cuckoo's Nest","Se7en","It's a Wonderful Life","The Silence of the Lambs","Saving Private Ryan","The Green Mile","City of God","Life Is Beautiful","Terminator 2: Judgment Day","Back to the Future","Spirited Away","The Pianist","Gladiator","Parasite","Grave of the Fireflies","Psycho","The Lion King","Kill Bill: Vol. 1","The Departed","Whiplash","The Prestige","American History X","Léon: The Professional","Spider-Man: Into the Spider-Verse","Cinema Paradiso","Casablanca","The Intouchables","The Usual Suspects","Django Unchained","Alien","Rear Window","Once Upon a Time in the West","Apocalypse Now","WALL·E","Memento","Dune: Part Two","Raiders of the Lost Ark","Avengers: Infinity War","The Lives of Others","Spider-Man: Across the Spider-Verse","The Shining","Inglourious Basterds","12th Fail","Aliens","Good Will Hunting","Avengers: Endgame","The Dark Knight Rises","Coco","Amadeus","Toy Story","Your Name.","Das Boot","Braveheart","Oldboy","Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb","3 Idiots","American Beauty","Project Hail Mary","Capernaum","Joker","Once Upon a Time in America","Come and See","Requiem for a Dream","Toy Story 3","The Hunt","Incendies","Eternal Sunshine of the Spotless Mind","Lawrence of Arabia","Heat","Scarface","2001: A Space Odyssey","Reservoir Dogs","Up","North by Northwest","Like Stars on Earth","Full Metal Jacket","Amélie","Citizen Kane","Vertigo","A Separation","Die Hard","To Kill a Mockingbird","Indiana Jones and the Last Crusade","A Clockwork Orange","1917","Snatch","The Wolf of Wall Street","Downfall","The Truman Show","Dangal","Green Book","Shutter Island","Oppenheimer","Batman Begins","For a Few Dollars More","Jurassic Park","Taxi Driver","There Will Be Blood","The Father","The Sixth Sense","Casino","No Country for Old Men","The Thing","Prisoners","Top Gun: Maverick","Pan's Labyrinth","Unforgiven","A Beautiful Mind","Finding Nemo","Klaus","The Elephant Man","Monty Python and the Holy Grail","The Secret in Their Eyes","Lock, Stock and Two Smoking Barrels","Chinatown","V for Vendetta","Catch Me If You Can","Inside Out","Three Billboards Outside Ebbing, Missouri","Trainspotting","Dead Poets Society","Warrior","Fargo","Million Dollar Baby","Mad Max: Fury Road","Raging Bull","Children of Heaven","My Neighbor Totoro","Gran Torino","Ratatouille","12 Years a Slave","The Grand Budapest Hotel","Before Sunrise","Memories of Murder","How to Train Your Dragon","Blade Runner","Gone Girl","Spider-Man: No Way Home","Monsters, Inc.","Jaws","Ford v Ferrari","In the Name of the Father","Wild Tales","Mary and Max","The Deer Hunter","Logan","Rocky","Pirates of the Caribbean: The Curse of the Black Pearl","La Haine","Spotlight","Wild Strawberries","The Terminator","Jai Bhim","Maharaja","The Big Lebowski","Before Sunset","Room","The Seventh Seal","Hotel Rwanda","Hachi: A Dog's Tale","Platoon","The Exorcist","Rush","My Father and My Son","The Handmaiden","Network","Drishyam","Donnie Darko","Babel","21 Grams","Traffic","Cape Fear","Mean Streets","Brazil","The Untouchables","Rain Man","The Last of the Mohicans","A Bronx Tale","Philadelphia","Captain Phillips","Sully","Flight","Enemy at the Gates","The Fifth Element","Donnie Brasco","The Devil's Advocate","Black Hawk Down","Training Day","Gangs of New York","Insomnia","Collateral","Sin City","Twelve Monkeys","Kingdom of Heaven","Being John Malkovich","Shaun of the Dead","Pi","Children of Men","The Motorcycle Diaries","Dances with Wolves","In Bruges","The Last Samurai","Eyes Wide Shut","Blood Diamond","Big Fish","3:10 to Yuma","The King of Comedy","Good Bye, Lenin!","Audition","Midsommar","Hereditary","[REC]","The Shape of Water","Zodiac","The Last King of Scotland","Synecdoche, New York","The Bucket List","District 9","Orphan","Star Trek","The Bourne Ultimatum","The Hurt Locker","The Curious Case of Benjamin Button","Groundhog Day","Jacob's Ladder","Crash","Wall Street","Black Swan","Barton Fink","Dog Day Afternoon","The Boy in the Striped Pyjamas","Persepolis","Slumdog Millionaire","Enter the Void","Moon","American Psycho","Miller's Crossing","Videodrome","K-PAX","The Pursuit of Happyness","Lost in Translation","The Aviator","Drive","Dogville","Let the Right One In","Sinners","La La Land","The Brutalist","CODA","Licorice Pizza","Magnolia","Phantom Thread","Hugo","American Gangster","Apollo 13","Argo","As Good as It Gets","Casino Royale","Cinderella Man","Cast Away","Cloud Atlas","Contact","Dead Man Walking","Mystic River","Following","Minority Report","Saving Mr. Banks","The Basketball Diaries","The Man from Earth","The Theory of Everything","Everything Everywhere All at Once","The Terminal","The Gods Must Be Crazy","Ex Machina","Body of Lies","Dallas Buyers Club","The World's Fastest Indian","One Battle After Another","Sicario","Dune","The Girl with the Dragon Tattoo","Terms of Endearment","Aftersun","28 Days Later","Carlito's Way","The Illusionist","Knives Out","A Few Good Men","The Big Short","Seven Pounds","Almost Famous","Boyhood","Primal Fear","Avatar","The Bourne Identity","The Bourne Supremacy","Blade Runner 2049","The Martian","Nightcrawler","Marty Supreme","My Left Foot: The Story of Christy Brown","American Sniper","Empire of the Sun","Kill Bill: Vol. 2","Kung Fu Panda","Kung Fu Panda 2","Primer","Prometheus","Red Dragon","TÁR","Skyfall","The Great Gatsby","The Others","The Judge","Zero Dark Thirty","The Age of Innocence","28 Years Later: The Bone Temple","In the Heat of the Night","Atonement","Blue Velvet","Mr. Nobody","The Name of the Rose","Wind River","Driving Miss Daisy","The English Patient","Annie Hall","Rosemary's Baby","The Wicker Man","After Hours","Thelma & Louise","The Fly","The Social Network","Nocturnal Animals","Source Code","Brokeback Mountain","Life of Pi","The Imitation Game","Manchester by the Sea","The Holy Mountain","All the President's Men","The Graduate","The Holdovers","American Fiction","The Substance","Past Lives","Poor Things","Killers of the Flower Moon","Anatomy of a Fall","The Fabelmans","The Banshees of Inisherin","Avatar: The Way of Water","King Richard","Sound of Metal","Minari","Marriage Story","Jojo Rabbit","BlacKkKlansman","Dunkirk","Lion","Hell or High Water","Arrival","Moonlight","The Revenant","Bridge of Spies","Nebraska","Her","Gravity","American Hustle","Silver Linings Playbook","Lincoln","Amour","Toy Story 2","Up in the Air","Moneyball","127 Hours","The Fighter","The King's Speech","The Blind Side","The Reader","Munich","Finding Neverland","The Insider","L.A. Confidential","The Fugitive","The Remains of the Day","Scent of a Woman","JFK","Beauty and the Beast","Awakenings","Kramer vs. Kramer","The Killing Fields","The Omen","A Nightmare on Elm Street","Baby Driver","Happiness","Avatar: Fire and Ash","Bicycle Thieves","It","The Descent","The Mist","Misery","Get Out","The Ring","Weapons","The Whale","The Florida Project","The Batman","Tenet","Soul","The Avengers","Avengers: Age of Ultron","A Quiet Place","A Quiet Place Part II","Anomalisa","The Hobbit: An Unexpected Journey","The Hobbit: The Desolation of Smaug","The Breakfast Club","The Sheep Detectives","Boogie Nights","Hokum","Short Term 12","Threads","Paris, Texas","The Odyssey","Gattaca","Dark City","A Woman Under the Influence","Paths of Glory"] },
+  { title: "My watchlist", films: 12, desc: "Perfect Days, The White Ribbon, Central Station, Departures, The Great Beauty, and more films waiting to be watched.", url: "https://letterboxd.com/behurasambit/list/my-watchlist/", img: "https://a.ltrbxd.com/resized/sm/upload/41/ot/ql/w8/great%20beauty-1200-1200-675-675-crop-000000.jpg?v=65360f8166",
+    movies: ["Perfect Days","The White Ribbon","Central Station","Departures","The Great Beauty","Tokyo Story","Farewell My Concubine","Landscape in the Mist","Do the Right Thing","Opening Night","Secrets & Lies","A Brighter Summer Day"] },
+  { title: "Spanish movies ranked", films: 27, desc: "Spanish-language cinema has always felt rich, diverse, and emotionally engaging — intimate personal dramas alongside intense thrillers.", url: "https://letterboxd.com/behurasambit/list/spanish-movies-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/c8/73/s2/zd/amores-1200-1200-675-675-crop-000000.jpg?v=414fdc6946",
+    movies: ["Amores Perros","All About My Mother","Roma","I Am Cuba","Wild Tales","The Skin I Live In","The Secret in Their Eyes","The Motorcycle Diaries","Argentina 1985","Y Tu Mamá También","Volver","The Exterminating Angel","The Sea Inside","Pain and Glory","Cell 211","Talk to Her","Society of the Snow","Sin Nombre","Pan's Labyrinth","Klaus","A Fantastic Woman","Open Your Eyes","Nine Queens","The Invisible Guest","The Orphanage","[REC]","Parallel Mothers"] },
+  { title: "Italian, German, Swedish, Danish, Dutch ranked", films: 35, desc: "Films from Italy, Germany, Denmark, the Netherlands, and Sweden have given me a very rich and varied cinematic experience.", url: "https://letterboxd.com/behurasambit/list/italiangermanswedishdanishdutch-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/52/t7/e1/jo/persona-1200-1200-675-675-crop-000000.jpg?v=bcb2f5cc53",
+    movies: ["Autumn Sonata","Persona","Scenes from a Marriage","Wild Strawberries","Fanny and Alexander","Cries and Whispers","The Hunt","The Celebration","Winter Light","Cinema Paradiso","Life Is Beautiful","Downfall","Another Round","Das Boot","Shame","Through a Glass Darkly","The Seventh Seal","In a Better World","Call Me by Your Name","The Lives of Others","The Zone of Interest","Bicycle Thieves","Good Bye, Lenin!","The Silence","The Promised Land","Timecrimes","The Vanishing","Let the Right One In","Run Lola Run","The Man Without a Past","Funny Games","Perfect Strangers","Adam's Apples","Ali: Fear Eats the Soul","Phoenix"] },
+  { title: "Ingmar Bergman movies ranked", films: 12, desc: "Ingmar Bergman didn't just direct movies, he performed a ruthless, beautifully shot autopsy on the human soul.", url: "https://letterboxd.com/behurasambit/list/ingmar-bergman-movies-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/8m/kx/61/mm/wild-1200-1200-675-675-crop-000000.jpg?v=f0f7e7e371",
+    movies: ["Autumn Sonata","Persona","Scenes from a Marriage","Wild Strawberries","Fanny and Alexander","Cries and Whispers","Winter Light","Through a Glass Darkly","Shame","The Virgin Spring","The Seventh Seal","The Silence"] },
+  { title: "Best foreign language movie Oscar ranked", films: 26, desc: "In cinema's global tapestry, these Oscar-crowned foreign language masterpieces transcend borders, weaving universal truths from intimate human fractures.", url: "https://letterboxd.com/behurasambit/list/best-foreign-language-movie-oscar-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/oi/ha/78/z8/parasite-1200-1200-675-675-crop-000000.jpg?v=03b9da4410",
+    movies: ["A Separation","Parasite","Cinema Paradiso","Roma","All About My Mother","The Salesman","Fanny and Alexander","Through a Glass Darkly","No Man's Land","Another Round","In a Better World","Life Is Beautiful","Amour","I'm Still Here","The Virgin Spring","All Quiet on the Western Front","The Lives of Others","The Discreet Charm of the Bourgeoisie","The Zone of Interest","Drive My Car","Bicycle Thieves","Son of Saul","The Secret in Their Eyes","Sentimental Value","The Sea Inside","A Fantastic Woman"] },
+  { title: "Surreal / Strange", films: 35, desc: "A journey through dreams, nightmares, and fractured realities — movies that refuse to behave like ordinary stories.", url: "https://letterboxd.com/behurasambit/list/surreal-strange/", img: "https://a.ltrbxd.com/resized/sm/upload/x3/fx/ae/ju/2001-space-odyssey-120-1200-1200-675-675-crop-000000.jpg?v=37a8a99963",
+    movies: ["2001: A Space Odyssey","The Holy Mountain","Eraserhead","Persona","Stalker","Mulholland Drive","Blue Velvet","The Discreet Charm of the Bourgeoisie","Requiem for a Dream","Eternal Sunshine of the Spotless Mind","Donnie Darko","Pi","Eyes Wide Shut","On the Silver Globe","The Exterminating Angel","Being John Malkovich","Brazil","Birdman or (The Unexpected Virtue of Ignorance)","Barton Fink","Mr. Nobody","mother!","Jacob's Ladder","Delicatessen","Enemy","Enter the Void","Un Chien Andalou","The Killing of a Sacred Deer","Synecdoche, New York","Holy Motors","Titane","Fantastic Planet","Annihilation","Poor Things","Videodrome","The Cremator"] },
+  { title: "Gangster", films: 31, desc: "Gangster films have always stood out to me for their intensity, style, and layered storytelling — loyalty, power, and consequence.", url: "https://letterboxd.com/behurasambit/list/gangster/", img: "https://a.ltrbxd.com/resized/sm/upload/ws/2f/hj/8v/goodfellas-1200-1200-675-675-crop-000000.jpg?v=5083689b66",
+    movies: ["GoodFellas","The Godfather Part II","The Godfather","Amores Perros","A Prophet","Sin Nombre","Casino","City of God","The Departed","The Irishman","Reservoir Dogs","A Bronx Tale","Scarface","The Usual Suspects","Miller's Crossing","Once Upon a Time in America","Boyz n the Hood","Road to Perdition","The Untouchables","Eastern Promises","Léon: The Professional","Donnie Brasco","Snatch","Infernal Affairs","Lock, Stock and Two Smoking Barrels","Heat","Carlito's Way","American Gangster","Training Day","Collateral","Gangs of New York"] },
+  { title: "Martin Scorsese ranked", films: 17, desc: "His movies are known for their sharp storytelling, intense characters, and powerful exploration of morality and violence.", url: "https://letterboxd.com/behurasambit/list/martin-scorcese-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/r6/mv/od/ry/lhFdMGwVYPceZRLU6WRUJGTd6Xo-1200-1200-675-675-crop-000000.jpg?v=8537ba182e",
+    movies: ["GoodFellas","Raging Bull","Taxi Driver","The Departed","Mean Streets","The King of Comedy","Shutter Island","The Wolf of Wall Street","Killers of the Flower Moon","After Hours","Casino","The Irishman","Cape Fear","Gangs of New York","The Age of Innocence","The Aviator","Hugo"] },
+  { title: "Satyajit Ray: My Favourite Director ranked", films: 13, desc: "Exhilarated by discoveries, wistful that Satyajit Ray's brilliance had eluded me for so long — his humanist masterworks, ranked.", url: "https://letterboxd.com/behurasambit/list/satyajit-ray-my-favourite-director-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/1e/86/o9/yu/charulata-1200-1200-675-675-crop-000000.jpg?v=200312e68e",
+    movies: ["Pather Panchali","The Music Room","Apur Sansar","Days and Nights in the Forest","Charulata","Aparajito","The Big City","The Hero","The Stranger","The Middleman","The Adversary","Distant Thunder","Two"] },
+  { title: "Miscellaneous foreign language ranked", films: 24, desc: "Especially memorable for its range, depth, and emotional power — creating entire moods and asking difficult questions.", url: "https://letterboxd.com/behurasambit/list/miscellaneous-foreign-language-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/pn/lo/pe/jr/city-of-god-1200-1200-675-675-crop-000000.jpg?v=b03d621f8a",
+    movies: ["Come and See","City of God","I'm Still Here","No Man's Land","Stalker","Leviathan","Sentimental Value","The Ascent","Pretty Village, Pretty Flame","Quo Vadis, Aida?","4 Months, 3 Weeks and 2 Days","On the Silver Globe","Tangerines","Son of Saul","Winter Sleep","The Secret Agent","The Voice of Hind Rajab","The Return","My Father and My Son","Io Capitano","Bol","The Cremator","Possession","Joyland"] },
+  { title: "French movies ranked", films: 22, desc: "French cinema has a way of staying with you long after the film is over — thoughtful, expressive, and often very personal.", url: "https://letterboxd.com/behurasambit/list/french-movies-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/2m/2c/7v/g4/amour-50-1200-1200-675-675-crop-000000.jpg?v=480487d38f",
+    movies: ["Amour","The Past","A Prophet","La Haine","The Discreet Charm of the Bourgeoisie","Incendies","Au Revoir les Enfants","Persepolis","Anatomy of a Fall","La Jetée","Amélie","The Diving Bell and the Butterfly","Portrait of a Lady on Fire","The Intouchables","Holy Motors","Delicatessen","Fantastic Planet","Un Chien Andalou","A Trip to the Moon","The Tenant","Three Colours: Red","Titane"] },
+  { title: "War movies ranked", films: 41, desc: "Schindler's List, Come and See, Grave of the Fireflies, Das Boot, Downfall, and more of the most powerful war films ever made.", url: "https://letterboxd.com/behurasambit/list/war-movies-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/9v/zy/xh/u3/grave-of-fireflies-1200-1200-675-675-crop-000000.jpg?v=adde23c8bd",
+    movies: ["Schindler's List","Come and See","Grave of the Fireflies","Das Boot","Downfall","Saving Private Ryan","Apocalypse Now","Pretty Village, Pretty Flame","Lawrence of Arabia","The Ascent","Full Metal Jacket","No Man's Land","Platoon","Quo Vadis, Aida?","All Quiet on the Western Front","The Pianist","Dunkirk","Lincoln","1917","Life Is Beautiful","Ran","Turtles Can Fly","I'm Still Here","The Deer Hunter","Black Hawk Down","The Zone of Interest","The Boy in the Striped Pyjamas","Braveheart","Inglourious Basterds","The Hurt Locker","Son of Saul","The Killing Fields","Empire of the Sun","Hotel Rwanda","Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb","The Lives of Others","Casablanca","American Sniper","Enemy at the Gates","The Last of the Mohicans","Troy"] },
+  { title: "Korean movies ranked", films: 12, desc: "Few national cinemas have impressed me as consistently as South Korea's — emotion, suspense, and depth in a bold yet human way.", url: "https://letterboxd.com/behurasambit/list/korean-movies-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/oi/ha/78/z8/parasite-1200-1200-675-675-crop-000000.jpg?v=03b9da4410",
+    movies: ["Parasite","Oldboy","Memories of Murder","I Saw the Devil","A Taxi Driver","Burning","Past Lives","The Wailing","The Handmaiden","Decision to Leave","Train to Busan","Minari"] },
+  { title: "Robert De Niro — My favourite ranked", films: 23, desc: "Few figures in the history of motion pictures have exerted as much gravitational pull on the craft of acting as Robert De Niro.", url: "https://letterboxd.com/behurasambit/list/robert-de-niro-my-favourite-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/ws/2f/hj/8v/goodfellas-1200-1200-675-675-crop-000000.jpg?v=5083689b66",
+    movies: ["GoodFellas","Raging Bull","Taxi Driver","The Godfather Part II","Mean Streets","The Deer Hunter","The King of Comedy","The Irishman","Cape Fear","Heat","Killers of the Flower Moon","Casino","The Untouchables","A Bronx Tale","Once Upon a Time in America","Awakenings","American Hustle","Brazil","Limitless","Joker","Men of Honor","Silver Linings Playbook","Jackie Brown"] },
+  { title: "Best Picture Oscars ranked", films: 46, desc: "These films span different eras, genres, and styles, but they all share one thing in common: they stand the test of time.", url: "https://letterboxd.com/behurasambit/list/best-picture-oscars-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/93/25/ds/ar/amadeus-1200-1200-675-675-crop-000000.jpg?v=6c64f3c798",
+    movies: ["Amadeus","Schindler's List","The Godfather Part II","One Flew Over the Cuckoo's Nest","The Godfather","Parasite","Moonlight","The Silence of the Lambs","Forrest Gump","American Beauty","Oppenheimer","Lawrence of Arabia","The Deer Hunter","Spotlight","12 Years a Slave","The Hurt Locker","No Country for Old Men","Nomadland","Platoon","Casablanca","Birdman or (The Unexpected Virtue of Ignorance)","Slumdog Millionaire","The King's Speech","The Departed","The Lord of the Rings: The Return of the King","Million Dollar Baby","Gladiator","Unforgiven","Rain Man","A Beautiful Mind","Braveheart","The Shape of Water","Dances with Wolves","The English Patient","Terms of Endearment","Kramer vs. Kramer","Annie Hall","Rocky","In the Heat of the Night","CODA","One Battle After Another","Green Book","Everything Everywhere All at Once","Driving Miss Daisy","Argo","Crash"] },
+  { title: "Persian / Arabic / Kurdish ranked", films: 30, desc: "Persian cinema's luminous thread weaves through these masterpieces, illuminating Iran's soul with unflinching grace amid constraint.", url: "https://letterboxd.com/behurasambit/list/persian-arabic-kurdish-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/pu/d9/qu/r3/a-separation-1200-1200-675-675-crop-000000.jpg?v=981be07989",
+    movies: ["A Separation","Fireworks Wednesday","Life and a Day","About Elly","The Salesman","Turtles Can Fly","The Past","Capernaum","Beautiful City","Taste of Cherry","A Hero","Children of Heaven","The Color of Paradise","A Time for Drunken Horses","Close-Up","The Song of Sparrows","Where Is the Friend's House?","Leila's Brothers","Baran","Law of Tehran","Omar","Offside","The Seed of the Sacred Fig","Crimson Gold","Life, and Nothing More…","Through the Olive Trees","It Was Just an Accident","Holy Spider","No Bears","The Lizard"] },
+  { title: "All Alien & Predator series ranked", films: 15, desc: "One of the most fascinating sci-fi franchises I have explored — suspense, horror, action, and a larger mythology.", url: "https://letterboxd.com/behurasambit/list/all-alien-predator-series-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/ty/tt/43/of/alien-1979-1200-1200-675-675-crop-000000.jpg?v=e67d042122",
+    movies: ["Alien","Aliens","Predator","Prey","Alien: Romulus","Prometheus","Predators","Predator: Badlands","Alien: Covenant","Predator 2","Alien³","The Predator","Alien Resurrection","AVP: Alien vs. Predator","Aliens vs Predator: Requiem"] }
+];
+
+const uniqueFilmSet = new Set();
+lists.forEach(l => (l.movies || []).forEach(m => uniqueFilmSet.add(m)));
+document.getElementById('statFilms').dataset.target = uniqueFilmSet.size;
+
+const grid = document.getElementById('grid');
+const noResults = document.getElementById('noResults');
+const searchInput = document.getElementById('search');
+const sortSelect = document.getElementById('sort');
+const resultCount = document.getElementById('resultCount');
+
+// Reveal-on-scroll
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.feature-card').forEach(el => revealObserver.observe(el));
+
+function matchedMovies(l, q) {
+  if (!q || !l.movies) return [];
+  return l.movies.filter(m => m.toLowerCase().includes(q)).slice(0, 3);
+}
+
+function render() {
+  const q = searchInput.value.trim().toLowerCase();
+  const sortMode = sortSelect.value;
+
+  let items = lists.filter(l => {
+    if (!q) return true;
+    if (l.title.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q)) return true;
+    if (l.movies && l.movies.some(m => m.toLowerCase().includes(q))) return true;
+    return false;
+  });
+
+  if (sortMode === 'films-desc') items = [...items].sort((a,b) => b.films - a.films);
+  else if (sortMode === 'films-asc') items = [...items].sort((a,b) => a.films - b.films);
+  else if (sortMode === 'az') items = [...items].sort((a,b) => a.title.localeCompare(b.title));
+
+  grid.innerHTML = '';
+  noResults.style.display = items.length ? 'none' : 'block';
+  const movieMatchCount = q ? items.filter(l => !(l.title.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q))).length : 0;
+  if (!q) {
+    resultCount.textContent = `Showing all ${items.length} lists`;
+  } else if (movieMatchCount > 0) {
+    resultCount.textContent = `Showing ${items.length} of ${lists.length} lists — including ${movieMatchCount} matched by movie title`;
+  } else {
+    resultCount.textContent = `Showing ${items.length} of ${lists.length} lists`;
+  }
+
+  items.forEach((l, i) => {
+    const a = document.createElement('a');
+    a.href = l.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.className = 'card';
+    a.style.animationDelay = (Math.min(i, 12) * 0.04) + 's';
+    const hits = matchedMovies(l, q);
+    const hitHtml = hits.length ? `<div class="movie-hit">🎬 ${hits.join(', ')}</div>` : '';
+    a.innerHTML = `
+      <div class="card-img">
+        <img src="${l.img}" alt="${l.title}" loading="lazy">
+        <div class="card-img-fade"></div>
+        <span class="card-count">${l.films.toLocaleString()} films</span>
+      </div>
+      <div class="card-body">
+        <h2>${l.title}</h2>
+        <p>${l.desc}</p>
+        ${hitHtml}
+        <span class="link">View on Letterboxd →</span>
+      </div>
+    `;
+    grid.appendChild(a);
+    revealObserver.observe(a);
+  });
+}
+
+searchInput.addEventListener('input', render);
+sortSelect.addEventListener('change', render);
+render();
+
+// Animated stat counters
+function animateCount(el, target, duration) {
+  const start = performance.now();
+  function tick(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(eased * target).toLocaleString();
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.stat .num').forEach(el => {
+        animateCount(el, parseInt(el.dataset.target, 10), 1400);
+      });
+      statObserver.disconnect();
+    }
+  });
+}, { threshold: 0.4 });
+statObserver.observe(document.querySelector('.stats'));
+
+// Subtle parallax on hero backdrop while scrolling
+const backdrop = document.getElementById('heroBackdrop');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y < 700) {
+    backdrop.style.transform = `translateY(${y * 0.25}px)`;
+  }
+}, { passive: true });
+</script>
+
+</body>
+</html>
