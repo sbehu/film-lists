@@ -82,20 +82,22 @@
     overflow: hidden;
   }
   .ember {
-    position: absolute;
-    bottom: -10px;
-    border-radius: 50%;
-    opacity: 0;
-    animation-name: emberRise;
-    animation-timing-function: ease-in;
-    animation-iteration-count: infinite;
+        position: absolute;
+        top: -30px;
+        opacity: 0;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+        animation-name: emberRise;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        will-change: transform, opacity;
   }
-  @keyframes emberRise {
-    0% { transform: translateY(0) translateX(0); opacity: 0; }
-    10% { opacity: 0.9; }
-    80% { opacity: 0.5; }
-    100% { transform: translateY(-420px) translateX(var(--drift, 20px)); opacity: 0; }
-  }
+    @keyframes emberRise {
+          0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.85; }
+          50% { transform: translateY(320px) translateX(var(--drift, 20px)) rotate(calc(160deg * var(--spin, 1))); }
+          90% { opacity: 0.6; }
+          100% { transform: translateY(680px) translateX(calc(var(--drift, 20px) * -1)) rotate(calc(320deg * var(--spin, 1))); opacity: 0; }
+    }
   .side-fx{position:fixed;top:0;height:100vh;width:max(0px,calc((100vw - 1240px) / 2));overflow:hidden;pointer-events:none;z-index:0;}.side-fx.left{left:0;}.side-fx.right{right:0;}@media (max-width: 1439px){.side-fx{display:none;}}.side-leaf{position:absolute;top:-40px;opacity:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.35));animation-name:leafFall;animation-timing-function:ease-in-out;animation-iteration-count:infinite;will-change:transform, opacity;}@keyframes leafFall{0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0;}10%{opacity:0.85;}50%{transform:translateY(50vh) translateX(var(--drift, 24px)) rotate(calc(160deg * var(--spin, 1)));}90%{opacity:0.7;}100%{transform:translateY(108vh) translateX(calc(var(--drift, 24px) * -1)) rotate(calc(320deg * var(--spin, 1)));opacity:0;}}.hero-content {
     position: relative;
     z-index: 2;
@@ -640,22 +642,23 @@ const heroImgs = [
 ];
 document.getElementById('heroBackdrop').innerHTML = heroImgs.map(src => `<img src="${src}" alt="" loading="lazy">`).join('');
 
-// Floating embers (autumn sparks) in the hero
-const emberColors = ['#ff7a30', '#ffc93c', '#ff4d6d'];
-const embersEl = document.getElementById('embers');
-let emberHtml = '';
-for (let i = 0; i < 26; i++) {
-  const left = Math.random() * 100;
-  const size = 3 + Math.random() * 5;
-  const duration = 6 + Math.random() * 8;
-  const delay = Math.random() * 10;
-  const drift = (Math.random() * 60 - 30).toFixed(0) + 'px';
-  const color = emberColors[i % emberColors.length];
-  emberHtml += `<span class="ember" style="left:${left}%; width:${size}px; height:${size}px; background:${color}; box-shadow:0 0 ${size * 2}px ${color}; animation-duration:${duration}s; animation-delay:${delay}s; --drift:${drift};"></span>`;
-}
-embersEl.innerHTML = emberHtml;
+// Falling autumn leaves in the hero (same leaf motif as the side margins)
+  const leafGlyphs = ['\u{1F341}', '\u{1F342}'];
+  const embersEl = document.getElementById('embers');
+  let emberHtml = '';
+  for (let i = 0; i < 20; i++) {
+      const left = Math.random() * 100;
+      const size = 12 + Math.random() * 12;
+      const duration = 7 + Math.random() * 8;
+      const delay = Math.random() * 10;
+      const drift = (Math.random() * 50 - 25).toFixed(0) + 'px';
+      const spin = Math.random() > 0.5 ? 1 : -1;
+      const glyph = leafGlyphs[i % leafGlyphs.length];
+      emberHtml += `<span class="ember" style="left:${left}%; font-size:${size}px; animation-duration:${duration}s; animation-delay:${delay}s; --drift:${drift}; --spin:${spin};">${glyph}</span>`;
+  }
+  embersEl.innerHTML = emberHtml;
 
-const leafGlyphs = ['\u{1F341}', '\u{1F342}']; function buildSideLeaves(el, count) { let html = ''; for (let i = 0; i < count; i++) { const left = 6 + Math.random() * 88; const size = 14 + Math.random() * 14; const duration = 12 + Math.random() * 12; const delay = Math.random() * 20; const drift = (Math.random() * 70 - 35).toFixed(0) + 'px'; const spin = Math.random() > 0.5 ? 1 : -1; const glyph = leafGlyphs[i % leafGlyphs.length]; html += `<span class="side-leaf" style="left:${left}%; font-size:${size}px; animation-duration:${duration}s; animation-delay:${delay}s; --drift:${drift}; --spin:${spin};">${glyph}</span>`; } el.insertAdjacentHTML('beforeend', html); } buildSideLeaves(document.getElementById('sideEmbersLeft'), 10); buildSideLeaves(document.getElementById('sideEmbersRight'), 10); const lists = [
+function buildSideLeaves(el, count) { let html = ''; for (let i = 0; i < count; i++) { const left = 6 + Math.random() * 88; const size = 14 + Math.random() * 14; const duration = 12 + Math.random() * 12; const delay = Math.random() * 20; const drift = (Math.random() * 70 - 35).toFixed(0) + 'px'; const spin = Math.random() > 0.5 ? 1 : -1; const glyph = leafGlyphs[i % leafGlyphs.length]; html += `<span class="side-leaf" style="left:${left}%; font-size:${size}px; animation-duration:${duration}s; animation-delay:${delay}s; --drift:${drift}; --spin:${spin};">${glyph}</span>`; } el.insertAdjacentHTML('beforeend', html); } buildSideLeaves(document.getElementById('sideEmbersLeft'), 10); buildSideLeaves(document.getElementById('sideEmbersRight'), 10); const lists = [
   { title: "My all time favourite ranked", films: 8, desc: "Having traversed cinema's boundless realms—from populist spectacles to introspective arthouse—I stand in awe before this constellation of films that define my soul's cinematic pantheon.", url: "https://letterboxd.com/behurasambit/list/my-all-time-favourite-ranked/", img: "https://a.ltrbxd.com/resized/sm/upload/eg/fm/xy/wx/autumn-sonata-1200-1200-675-675-crop-000000.jpg?v=c6c2f2761a",
     movies: ["Autumn Sonata","Pather Panchali","Ikiru","Amadeus","Schindler's List","GoodFellas","A Separation","There Will Be Blood"] },
   { title: "My Foreign Language Cinema 100-point ranking", films: 169, desc: "A personal 100-point ranking of every foreign-language film I've watched, built film by film. Ordered highest to lowest.", url: "https://letterboxd.com/behurasambit/list/my-foreign-language-cinema-100-point-ranking/", img: "https://a.ltrbxd.com/resized/sm/upload/yc/mc/ep/c9/yi-yi-1200-1200-675-675-crop-000000.jpg?v=b55a45939d",
